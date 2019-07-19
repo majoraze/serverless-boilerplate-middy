@@ -1,0 +1,23 @@
+create:
+  handler: src/services/drivers/endpoints/create.handler
+  events:
+    - http:
+        path: drivers
+        method: post
+        cors: true
+
+update:
+  handler: src/services/drivers/endpoints/update.handler
+  events:
+    - http:
+        path: drivers/{id}
+        method: put
+        cors: true
+
+find:
+    handler: src/services/drivers/endpoints/find.handler
+    events:
+      - http:
+          path: drivers
+          method: get
+          cors: true

@@ -1,0 +1,44 @@
+service: 'truck-driver-api'
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: ${opt:region, 'us-east-1'}
+  profile: ${file(config/${self:custom.stage}.yml):config.profile}
+  memorySize: 1024
+  timeout: 30
+  versionFunctions: false
+  stackTags: ${file(config/${self:custom.stage}.yml):tags}
+  environment:
+    ${file(config/${self:custom.stage}.yml):environment}
+
+  deploymentBucket:
+    name: mobly.${self:custom.stage}.serverless.${self:provider.region}.deploys
+
+package:
+  individually: ${file(config/${self:custom.stage}.yml):config.packageIndividually}
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-add-api-key
+
+custom:
+  stage: ${env:SLS_STAGE, opt:stage, self:provider.stage, 'local'}
+
+  serverless-offline:
+    host: 0.0.0.0
+    babelOptions:
+      presets: ["@babel/env"]
+
+  webpack:
+    excludeFiles: '**/*.spec.js'
+    webpackConfig: webpack.config.js
+    includeModules:
+      packagePath: package.json
+      forceExclude:
+        - aws-sdk # to guarantee the sdk is excluded in the package
+
+functions:
+  - ${file(./src/services/drivers/endpoints/_endpoints.yml)} # api endpoints
+  - ${file(./src/services/itineraries/endpoints/_endpoints.yml)} # api endpoints

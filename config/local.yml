@@ -1,0 +1,14 @@
+config:
+  packageIndividually: true
+  profile: mobly-dev
+
+tags:
+  departament: TI
+  project: services
+  environment: ${self:custom.stage}
+
+environment:
+  MONGO_URI: 'mongodb://mongo:27017/truck'
+  STAGE: ${self:custom.stage}
+  # ACCOUNT_ID: '#{AWS::AccountId}'
+  SERVERLESS_SERVICE: ${self:service}

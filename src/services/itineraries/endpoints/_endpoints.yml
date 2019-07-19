@@ -1,0 +1,7 @@
+getItinerariesByTruckType:
+  handler: src/services/itineraries/endpoints/find-by-truck-type.handler
+  events:
+    - http:
+        path: itineraries/{truckType}
+        method: get
+        cors: true

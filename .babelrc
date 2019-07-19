@@ -1,0 +1,14 @@
+{
+  "presets": [
+    ["@babel/env", {
+      "targets": {
+        "node": "8.10"
+      }
+    }]
+  ],
+
+  "plugins": [
+    ["inline-json-import", {}],
+    "@babel/plugin-proposal-object-rest-spread"
+  ]
+}

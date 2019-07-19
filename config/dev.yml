@@ -1,0 +1,15 @@
+config:
+  packageIndividually: true
+  profile: mobly-dev
+
+tags:
+  departament: TI
+  project: services
+  service: ${self:service}
+  environment: ${self:custom.stage}
+
+environment:
+  MONGO_URI: ${ssm:MONGO_URI}
+  STAGE: ${self:custom.stage}
+  # ACCOUNT_ID: '#{AWS::AccountId}'
+  SERVERLESS_SERVICE: ${self:service}

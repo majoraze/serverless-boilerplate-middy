@@ -1,0 +1,6 @@
+root = true
+
+[*.{js,json}]
+charset = utf-8
+indent_style = spaces
+indent_size = 2

@@ -1,0 +1,11 @@
+.serverless/
+.git/
+node_modules/
+coverage/
+
+.editorconfig
+.eslintrc
+.gitignore
+docker-compose.yml
+Dockerfile
+README.md

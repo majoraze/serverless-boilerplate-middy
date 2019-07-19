@@ -1,0 +1,17 @@
+version: '3'
+services:
+  mongo:
+    image: "mongo"
+    ports:
+      - "27017:27017"
+  truck-driver-app:
+    build: .
+    depends_on:
+      - mongo
+    expose:
+      - 3000
+    ports:
+      - "3000:3000"
+    # restart: on-failure
+    volumes:
+      - ./:/app

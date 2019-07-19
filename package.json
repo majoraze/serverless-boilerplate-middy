@@ -1,0 +1,83 @@
+{
+  "name": "truck-driver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@middy/core": "1.0.0-alpha.35",
+    "@middy/do-not-wait-for-empty-event-loop": "1.0.0-alpha.35",
+    "@middy/error-logger": "1.0.0-alpha.35",
+    "@middy/http-cors": "1.0.0-alpha.35",
+    "@middy/http-error-handler": "1.0.0-alpha.35",
+    "@middy/http-event-normalizer": "1.0.0-alpha.35",
+    "@middy/http-json-body-parser": "1.0.0-alpha.35",
+    "@sharecover-co/middy-http-response-serializer": "0.1.0",
+    "http-errors": "1.7.3",
+    "moment": "2.24.0",
+    "mongoose": "^5.4.7",
+    "mongoose-paginate": "^5.0.3",
+    "serverless-offline": "^4.2.0",
+    "validator": "10.11.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.5.4",
+    "@babel/plugin-proposal-object-rest-spread": "7.5.5",
+    "@babel/preset-env": "7.5.4",
+    "app-root-path": "2.2.1",
+    "babel-loader": "8.0.6",
+    "babel-plugin-inline-json-import": "0.3.2",
+    "eslint": "^5.12.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.15.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "faker": "^4.1.0",
+    "jest": "^24.0.0",
+    "jest-webpack": "0.5.1",
+    "mockingoose": "^2.12.0",
+    "serverless-add-api-key": "3.2.0",
+    "serverless-webpack": "5.3.1",
+    "standard": "13.0.2",
+    "webpack": "4.36.1",
+    "webpack-cli": "3.3.6",
+    "webpack-node-externals": "1.7.2",
+    "yenv": "^2.1.0"
+  },
+  "scripts": {
+    "deploy:env": "sls deploy --stage $NODE_ENV",
+    "deploy": "export NODE_ENV=dev && npm run deploy:env",
+    "deploy:staging": "export NODE_ENV=staging && npm run deploy:env",
+    "deploy:production": "export NODE_ENV=prod && npm run deploy:env",
+    "test": "standard && jest",
+    "lint": "standard",
+    "lint:fix": "standard --fix",
+    "start": "sls offline start --host=0.0.0.0 --stage local",
+    "build:fixture": "rm -rf .webpack && webpack --config webpack.fixture.config.js --mode production",
+    "start:fixture": "npm run build:fixture && node ./.webpack/fixtures/main.js clear && node ./.webpack/fixtures/main.js create && serverless offline start --host=0.0.0.0 --stage local",
+    "test:coverage": "standard && jest --coverage",
+    "log:tail": "sls logs -f ${FUNCTION_NAME:function_name} -t -s ${STAGE:dev} --startTime ${TIME:'5m'}",
+    "invoke:watch": "sls invoke local --watch --function ${FUNCTION_NAME:function_name} --path ${EVENT_PATH:'mock/event.json'}"
+  },
+  "jest": {
+    "verbose": true,
+    "collectCoverageFrom": [
+      "src/services/**/*.js",
+      "src/utils/**/*.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "testEnvironment": "node",
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
+  },
+  "author": "",
+  "license": "MIT"
+}
