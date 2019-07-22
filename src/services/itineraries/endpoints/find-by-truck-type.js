@@ -1,22 +1,29 @@
+import middy from '@middy/core'
+import doNotWaitForEmptyEventLoop from '@middy/do-not-wait-for-empty-event-loop'
+import httpEventNormalizer from '@middy/http-event-normalizer'
+import cors from '@middy/http-cors'
+import httpErrorHandler from '@middy/http-error-handler'
+import inputOutputLogger from '@middy/error-logger'
+import httpResponseSerializer from '@sharecover-co/middy-http-response-serializer'
+import createError from 'http-errors'
+
 import { createConnection } from '../../../mongoose/connection'
 import { generatePaginateOptions } from '../../../utils/pagination'
-import { responseSuccess, responseInternalError } from '../../../utils/response'
 import Driver from '../../../mongoose/models/driver'
 import TruckType from '../../../mongoose/models/truck-type'
 
-const handler = async (event, context) => {
+const handler = middy(async (event, context) => {
   context.callbackWaitsForEmptyEventLoop = false
 
   try {
     const { truckType = 'not-found' } = event.pathParameters
-    let { queryStringParameters } = event
-    queryStringParameters = queryStringParameters || {}
+    const { queryStringParameters = {} } = event
 
     await createConnection()
 
     // checking if the truck type exists in collection
     const checkTruckType = await TruckType.findOne({ cod: truckType }).lean()
-    if (!checkTruckType) return responseInternalError({ message: `You must provide a valid truck type code.` })
+    if (!checkTruckType) throw new createError.UnprocessableEntity(`You must provide a valid truck type code.`)
 
     const query = { 'truckType.cod': parseInt(truckType, 10) }
 
@@ -25,10 +32,20 @@ const handler = async (event, context) => {
 
     const data = await Driver.paginate(query, optionsPaginate)
 
-    return responseSuccess(data)
-  } catch (error) {
-    return responseInternalError(error)
+    return data
+  } catch (err) {
+    // checar instancia do erro para ver se é não tratada, se não explode o erro direto
+    if (!err.statusCode) throw new createError.InternalServerError()
+    throw err
   }
-}
+})
+
+handler
+  .use(doNotWaitForEmptyEventLoop()) // adiciona o context.doNotWaitForEmptyEventLoop = false
+  .use(httpEventNormalizer()) // normaliza queryStringParameters e pathParameters (Basicamente cria um {} caso não envie parametros)
+  .use(inputOutputLogger()) // cria um console.error nos erros
+  .use(httpErrorHandler({ logger: false })) // valida qualquer erro do formato http-errors
+  .use(cors()) // adiciona os headers do cors (tem que ser antes do response)
+  .use(httpResponseSerializer()) // serializa a resposta caso seja sucesso em statusCode 200 e repassa o objeto de retorno
 
 export { handler }

@@ -56,6 +56,7 @@
     "build:fixture": "rm -rf .webpack && webpack --config webpack.fixture.config.js --mode production",
     "start:fixture": "npm run build:fixture && node ./.webpack/fixtures/main.js clear && node ./.webpack/fixtures/main.js create && serverless offline start --host=0.0.0.0 --stage local",
     "test:coverage": "standard && jest --coverage",
+    "sls:config:profile": "sls config credentials --profile ${PROFILE:mobly-dev} --overwrite --provider aws --key $AWS_KEY --secret $AWS_SECRET",
     "log:tail": "sls logs -f ${FUNCTION_NAME:function_name} -t -s ${STAGE:dev} --startTime ${TIME:'5m'}",
     "invoke:watch": "sls invoke local --watch --function ${FUNCTION_NAME:function_name} --path ${EVENT_PATH:'mock/event.json'}"
   },

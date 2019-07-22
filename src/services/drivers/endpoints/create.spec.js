@@ -23,14 +23,14 @@ describe('Create Driver:', () => {
 
   it('testing creation driver success', async (done) => {
     const event = { body: driverValid } // sem stringify
-    const response = { _id }
+    // const response = { _id }
 
     mockingoose.Driver.toReturn(driverValid, 'save')
     const result = await handler(event, context)
 
     expect(result).toHaveProperty('statusCode', 200)
     expect(result).toHaveProperty('body')
-    expect(JSON.parse(result.body)).toHaveProperty('data', response)
+    expect(JSON.parse(result.body)).toHaveProperty('_id', _id)
     done()
   })
 

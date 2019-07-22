@@ -85,9 +85,8 @@ describe('Find Driver:', () => {
     mockingoose.Driver.toReturn(doc, 'find')
     const result = await handler(event, context)
 
-    expect(result).toHaveProperty('statusCode', 500)
+    expect(result).toHaveProperty('statusCode', 422)
     expect(result).toHaveProperty('body')
-    expect(JSON.parse(result.body)).toHaveProperty('message', 'You must provide a boolean value for the countOnly parameter.')
     done()
   })
 
@@ -157,9 +156,8 @@ describe('Find Driver:', () => {
     mockingoose.Driver.toReturn(doc, 'find')
     const result = await handler(event, context)
 
-    expect(result).toHaveProperty('statusCode', 500)
+    expect(result).toHaveProperty('statusCode', 422)
     expect(result).toHaveProperty('body')
-    expect(JSON.parse(result.body)).toHaveProperty('message', 'You must provide one of the following values for the period parameter: day, week, month.')
     done()
   })
 
@@ -193,9 +191,8 @@ describe('Find Driver:', () => {
     mockingoose.Driver.toReturn(doc, 'find')
     const result = await handler(event, context)
 
-    expect(result).toHaveProperty('statusCode', 500)
+    expect(result).toHaveProperty('statusCode', 422)
     expect(result).toHaveProperty('body')
-    expect(JSON.parse(result.body)).toHaveProperty('message', 'You must provide a boolean value for the truckOwner parameter.')
     done()
   })
 
@@ -229,9 +226,8 @@ describe('Find Driver:', () => {
     mockingoose.Driver.toReturn(doc, 'find')
     const result = await handler(event, context)
 
-    expect(result).toHaveProperty('statusCode', 500)
+    expect(result).toHaveProperty('statusCode', 422)
     expect(result).toHaveProperty('body')
-    expect(JSON.parse(result.body)).toHaveProperty('message', 'You must provide a boolean value for the loaded parameter.')
     done()
   })
 
@@ -244,7 +240,6 @@ describe('Find Driver:', () => {
 
     expect(result).toHaveProperty('statusCode', 500)
     expect(result).toHaveProperty('body')
-    expect(JSON.parse(result.body)).toHaveProperty('message', 'Timeout')
     done()
   })
 })

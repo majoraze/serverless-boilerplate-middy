@@ -23,7 +23,7 @@ describe('Update Driver:', () => {
 
   it('testing update driver success', async (done) => {
     const event = {
-      body: JSON.stringify(driverValid),
+      body: driverValid,
       pathParameters: { id: _id }
     }
 
@@ -39,7 +39,7 @@ describe('Update Driver:', () => {
 
   it('testing update driver not exists', async (done) => {
     const event = {
-      body: JSON.stringify({}),
+      body: {},
       pathParameters: { id: _id }
     }
 
@@ -50,13 +50,12 @@ describe('Update Driver:', () => {
 
     expect(result).toHaveProperty('statusCode', 404)
     expect(result).toHaveProperty('body')
-    expect(JSON.parse(result.body)).toHaveProperty('message', `Driver id: ${_id} not found`)
     done()
   })
 
   it('testing update driver error', async (done) => {
     const event = {
-      body: JSON.stringify({}),
+      body: {},
       pathParameters: { id: _id }
     }
 
@@ -65,7 +64,6 @@ describe('Update Driver:', () => {
     const result = await handler(event, context)
     expect(result).toHaveProperty('statusCode', 500)
     expect(result).toHaveProperty('body')
-    expect(JSON.parse(result.body)).toHaveProperty('message', 'Timeout')
     done()
   })
 })

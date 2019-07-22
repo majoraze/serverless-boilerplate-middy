@@ -21,10 +21,12 @@ const handler = middy(async (event, context) => {
     await createConnection()
     const driver = await Driver.create(body)
 
-    const response = { data: { _id: driver._id } }
+    const response = { _id: driver._id }
     return response
-  } catch (error) {
-    throw new createError.InternalServerError()
+  } catch (err) {
+    // checar instancia do erro para ver se é não tratada, se não explode o erro direto
+    if (!err.statusCode) throw new createError.InternalServerError()
+    throw err
   }
 })
 

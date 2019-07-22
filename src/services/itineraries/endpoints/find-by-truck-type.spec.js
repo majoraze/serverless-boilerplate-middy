@@ -63,9 +63,8 @@ describe('Find Itineraries:', () => {
     mockingoose.TruckType.toReturn(truckDoc, 'findOne')
     const result = await handler(event, context)
 
-    expect(result).toHaveProperty('statusCode', 500)
+    expect(result).toHaveProperty('statusCode', 422)
     expect(result).toHaveProperty('body')
-    expect(JSON.parse(result.body)).toHaveProperty('message', 'You must provide a valid truck type code.')
     done()
   })
 
@@ -82,7 +81,6 @@ describe('Find Itineraries:', () => {
 
     expect(result).toHaveProperty('statusCode', 500)
     expect(result).toHaveProperty('body')
-    expect(JSON.parse(result.body)).toHaveProperty('message', 'Timeout')
     done()
   })
 })
