@@ -1,0 +1,108 @@
+{
+	"title": "Create Driver",
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"required": [
+		"body",
+		"pathParameters"
+	],
+	"properties": {
+		"pathParameters": {
+			"type": "object",
+			"required": [
+				"id"
+			],
+			"id": {
+				"type": "string",
+				"pattern": "^(.*)$"
+			}
+		},
+		"body": {
+			"type": "object",
+			"required": [
+				"name",
+				"birthDate",
+				"gender",
+				"truckOwner",
+				"licenseType",
+				"loaded",
+				"truckType",
+				"origin",
+				"destination"
+			],
+			"properties": {
+				"name": {
+					"type": "string",
+					"pattern": "^(.*)$"
+				},
+				"birthDate": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"gender": {
+					"type": "string",
+					"pattern": "^(.*)$"
+				},
+				"truckOwner": {
+					"type": "boolean"
+				},
+				"licenseType": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 1,
+					"pattern": "^(.*)$"
+				},
+				"loaded": {
+					"type": "boolean"
+				},
+				"truckType": {
+					"type": "object",
+					"required": [
+						"cod",
+						"name"
+					],
+					"properties": {
+						"cod": {
+							"type": "string",
+							"pattern": "\\d"
+						},
+						"name": {
+							"type": "string",
+							"pattern": "^(.*)$"
+						}
+					}
+				},
+				"origin": {
+					"type": "object",
+					"required": [
+						"lat",
+						"lng"
+					],
+					"properties": {
+						"lat": {
+							"type": "number"
+						},
+						"lng": {
+							"type": "number"
+						}
+					}
+				},
+				"destination": {
+					"type": "object",
+					"required": [
+						"lat",
+						"lng"
+					],
+					"properties": {
+						"lat": {
+							"type": "number"
+						},
+						"lng": {
+							"type": "number"
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -3,9 +3,9 @@ import doNotWaitForEmptyEventLoop from '@middy/do-not-wait-for-empty-event-loop'
 import httpEventNormalizer from '@middy/http-event-normalizer'
 import cors from '@middy/http-cors'
 import httpErrorHandler from '@middy/http-error-handler'
-import inputOutputLogger from '@middy/error-logger'
 import httpResponseSerializer from '@sharecover-co/middy-http-response-serializer'
 import createError from 'http-errors'
+import Log from '@dazn/lambda-powertools-logger'
 
 import Driver from '../../../mongoose/models/driver'
 import { createConnection } from '../../../mongoose/connection'
@@ -15,12 +15,12 @@ import validator from 'validator'
 import moment from 'moment'
 
 const handler = middy(async (event, context) => {
-  try {
-    const { queryStringParameters = {} } = event
+  const { queryStringParameters = {} } = event
 
+  try {
     await createConnection()
 
-    const { loaded = null, truckOwner = null, countOnly = null, period = null } = queryStringParameters
+    const { loaded = null, truckOwner = null, period = null } = queryStringParameters
     const query = {}
 
     if (loaded) {
@@ -32,8 +32,6 @@ const handler = middy(async (event, context) => {
       if (!validator.isBoolean(truckOwner)) throw new createError.UnprocessableEntity(`You must provide a boolean value for the truckOwner parameter.`)
       query.truckOwner = truckOwner
     }
-
-    if (countOnly && !validator.isBoolean(countOnly)) throw new createError.UnprocessableEntity(`You must provide a boolean value for the countOnly parameter.`)
 
     if (period) {
       if (!POSSIBLE_PERIOD_VALUES.includes(period)) throw new createError.UnprocessableEntity(`You must provide one of the following values for the period parameter: ${POSSIBLE_PERIOD_VALUES.join(', ')}.`)
@@ -48,18 +46,19 @@ const handler = middy(async (event, context) => {
 
     const optionsPaginate = generatePaginateOptions(queryStringParameters)
 
-    let data
-    if (!countOnly) {
-      data = await Driver.paginate(query, optionsPaginate)
-    } else {
-      data = await Driver.countDocuments(query)
-      data = { count: data }
-    }
+    const data = await Driver.paginate(query, optionsPaginate)
 
     return data
   } catch (err) {
-    // checar instancia do erro para ver se é não tratada, se não explode o erro direto
-    if (!err.statusCode) throw new createError.InternalServerError()
+    // verifica se o erro tem statusCode (ou seja é erro tratado no código com codigo http já)
+    if (!err.statusCode) {
+      // Erro não tratado em formato http
+      const notTreated = new createError.InternalServerError()
+      Log.error(err.message, { date: new Date() }, err)
+      throw notTreated
+    }
+
+    Log.warn(err.message, { date: new Date() }, err)
     throw err
   }
 })
@@ -67,8 +66,7 @@ const handler = middy(async (event, context) => {
 handler
   .use(doNotWaitForEmptyEventLoop()) // adiciona o context.doNotWaitForEmptyEventLoop = false
   .use(httpEventNormalizer()) // normaliza queryStringParameters e pathParameters (Basicamente cria um {} caso não envie parametros)
-  .use(inputOutputLogger()) // cria um console.error nos erros
-  .use(httpErrorHandler({ logger: false })) // valida qualquer erro do formato http-errors
+  .use(httpErrorHandler()) // valida qualquer erro do formato http-errors
   .use(cors()) // adiciona os headers do cors (tem que ser antes do response)
   .use(httpResponseSerializer()) // serializa a resposta caso seja sucesso em statusCode 200 e repassa o objeto de retorno
 

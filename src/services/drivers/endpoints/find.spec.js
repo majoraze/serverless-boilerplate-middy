@@ -55,41 +55,6 @@ describe('Find Driver:', () => {
     done()
   })
 
-  it('testing finding driver with countOnly parameter', async (done) => {
-    const event = {
-      queryStringParameters: {
-        countOnly: 'true'
-      }
-    }
-
-    const doc = { count: 1 }
-
-    mockingoose.Driver.toReturn(doc, 'countDocuments')
-    const result = await handler(event, context)
-
-    expect(result).toHaveProperty('statusCode', 200)
-    expect(result).toHaveProperty('body')
-    expect(JSON.parse(result.body)).toHaveProperty('count')
-    done()
-  })
-
-  it('testing finding driver with countOnly parameter error', async (done) => {
-    const event = {
-      queryStringParameters: {
-        countOnly: 'error'
-      }
-    }
-
-    const doc = { count: 1 }
-
-    mockingoose.Driver.toReturn(doc, 'find')
-    const result = await handler(event, context)
-
-    expect(result).toHaveProperty('statusCode', 422)
-    expect(result).toHaveProperty('body')
-    done()
-  })
-
   it('testing finding driver with period parameter (day)', async (done) => {
     const event = {
       queryStringParameters: {

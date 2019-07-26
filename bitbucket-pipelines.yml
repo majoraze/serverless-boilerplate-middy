@@ -1,0 +1,106 @@
+image: node:8.10-stretch
+
+options:
+  size: 2x
+
+pipelines:
+  default:
+    - step:
+        name: Test and coverage
+        caches:
+          - node
+        script:
+          - npm install
+          - npm test
+
+  branches:
+
+    master:
+      - step:
+          name: Test and coverage
+          caches:
+            - node
+          script:
+            - npm install
+            - npm test
+
+      - step:
+          deployment: production
+          name: Deploy to production
+          caches:
+            - node
+          script:
+            - npm install
+            # - apt-get update -y
+            # - apt-get install -y python-dev groff
+            # - curl -O https://bootstrap.pypa.io/get-pip.py
+            # - python get-pip.py --user
+            # - echo 'export PATH=~/.local/bin:$PATH' >> ~/.bashrc
+            # - source ~/.bashrc
+            # - pip --version
+            # - pip install awscli --upgrade --user
+            # - aws --version
+            # - npm run config:credentials:prod
+            - npm run deploy:prod
+
+    develop:
+      - step:
+          name: Test and coverage
+          caches:
+            - node
+          script:
+            - npm install
+            - npm test
+
+      - step:
+          deployment: test
+          name: Deploy to dev
+          caches:
+            - node
+          script:
+            - npm install
+            # - apt-get update -y
+            # - apt-get install -y python-dev groff
+            # - curl -O https://bootstrap.pypa.io/get-pip.py
+            # - python get-pip.py --user
+            # - echo 'export PATH=~/.local/bin:$PATH' >> ~/.bashrc
+            # - source ~/.bashrc
+            # - pip --version
+            # - pip install awscli --upgrade --user
+            # - aws --version
+            - npm run config:credentials:dev
+            - npm run deploy:dev
+
+      - step:
+          deployment: staging
+          name: Deploy to staging
+          trigger: manual
+          caches:
+            - node
+          script:
+            - npm install
+            # - apt-get update -y
+            # - apt-get install -y python-dev groff
+            # - curl -O https://bootstrap.pypa.io/get-pip.py
+            # - python get-pip.py --user
+            # - echo 'export PATH=~/.local/bin:$PATH' >> ~/.bashrc
+            # - source ~/.bashrc
+            # - pip --version
+            # - pip install awscli --upgrade --user
+            # - aws --version
+            - npm run config:credentials:staging
+            - npm run deploy:staging
+
+  custom:
+    generate-documentation:
+      - step:
+          name: Generate documentation
+          script:
+            - echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+            - apk add --update python
+            - apk add --update python-dev
+            - apk add --update python py-pip
+            - pip install awscli --upgrade
+            - npm install -g pretty-swag
+            - chmod +x ./documentation/get-documentation.sh
+            - ./documentation/get-documentation.sh dev us-east-1 boilerplate-api-node

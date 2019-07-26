@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Find all Drivers",
+  "type": "object",
+  "required": [
+    "body",
+    "statusCode"
+  ],
+  "properties": {
+    "statusCode": {
+      "type": "number"
+    },
+    "body": {
+      "type": "object",
+      "properties": {
+        "docs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "origin": {
+                "type": "object",
+                "required": [
+                  "lat",
+                  "lng"
+                ],
+                "properties": {
+                  "lat": {
+                    "type": "number"
+                  },
+                  "lng": {
+                    "type": "number"
+                  }
+                }
+              },
+              "destination": {
+                "type": "object",
+                "required": [
+                  "lat",
+                  "lng"
+                ],
+                "properties": {
+                  "lat": {
+                    "type": "number"
+                  },
+                  "lng": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "total": {
+          "type": "number"
+        },
+        "limit": {
+          "type": "number"
+        },
+        "page": {
+          "type": "number"
+        },
+        "pages": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}

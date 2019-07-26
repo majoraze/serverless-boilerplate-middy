@@ -1,10 +1,10 @@
-service: 'truck-driver-api'
+service: 'boilerplate-api-node'
 
 provider:
   name: aws
   runtime: nodejs8.10
   region: ${opt:region, 'us-east-1'}
-  profile: ${file(config/${self:custom.stage}.yml):config.profile}
+  profile: ${file(config/${self:custom.stage}.yml):config.profile, 'mobly-dev'}
   memorySize: 1024
   timeout: 30
   versionFunctions: false
@@ -22,9 +22,51 @@ plugins:
   - serverless-webpack
   - serverless-offline
   - serverless-add-api-key
+  - serverless-aws-documentation
 
 custom:
   stage: ${env:SLS_STAGE, opt:stage, self:provider.stage, 'local'}
+
+  documentation:
+    api:
+      info:
+        version: '1'
+        title: Boilerplate API
+        description: Documentação do exemplo Boilerplate
+      contact:
+          name: Time responsável
+          email: fake@email.com
+    authorizers:
+      -
+        name: "OAuth 2.0"
+        description: ""
+    tags:
+      -
+        name: "Drivers"
+        description: "Services for drivers"
+      -
+        name: "Itineraries"
+        description: "Service for itineraries"
+    models:
+      # Default Models
+      -
+        name: "ResponseId"
+        description: "This is object when response id (updates, deletes of specific object)"
+        contentType: "application/json"
+        schema: ${file(models/response-id.json)}
+      -
+        name: "ResponseError"
+        description: "This is object when any error ocurred"
+        contentType: "text/plain"
+        schema:
+          type: string
+      # Driver Models
+      - ${file(src/services/drivers/endpoints/_models.yml):DriverCreateReq}
+      - ${file(src/services/drivers/endpoints/_models.yml):DriverUpdateReq}
+      - ${file(src/services/drivers/endpoints/_models.yml):DriverFindAllRes}
+      #itinerary models
+      - ${file(src/services/itineraries/endpoints/_models.yml):ItineraryFindAllRes}
+      #user models
 
   serverless-offline:
     host: 0.0.0.0
@@ -40,5 +82,5 @@ custom:
         - aws-sdk # to guarantee the sdk is excluded in the package
 
 functions:
-  - ${file(./src/services/drivers/endpoints/_endpoints.yml)} # api endpoints
-  - ${file(./src/services/itineraries/endpoints/_endpoints.yml)} # api endpoints
+  - ${file(src/services/drivers/endpoints/_endpoints.yml)} # api endpoints
+  - ${file(src/services/itineraries/endpoints/_endpoints.yml)} # api endpoints

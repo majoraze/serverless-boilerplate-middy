@@ -1,0 +1,542 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Documentação do exemplo Boilerplate",
+    "version": "2019-07-26T20:23:22Z",
+    "title": "dev-boilerplate-api-node"
+  },
+  "host": "jtofxmdcwj.execute-api.us-east-1.amazonaws.com",
+  "basePath": "/dev",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/drivers": {
+      "get": {
+        "tags": [
+          "Drivers"
+        ],
+        "summary": "Method for get list of drivers",
+        "produces": [
+          "text/plain",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "loaded",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "truckOwner",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/DriverFindAllRes"
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "schema": {
+              "$ref": "#/definitions/ResponseError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/ResponseError"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Drivers"
+        ],
+        "summary": "Method for create driver",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "DriverCreateReq",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DriverCreateReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/ResponseId"
+            }
+          },
+          "500": {
+            "description": "500 response",
+            "schema": {
+              "$ref": "#/definitions/ResponseError"
+            }
+          }
+        }
+      }
+    },
+    "/drivers/{id}": {
+      "put": {
+        "tags": [
+          "Drivers"
+        ],
+        "summary": "Method for get list of drivers",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the driver",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "DriverUpdateReq",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DriverUpdateReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/ResponseId"
+            }
+          }
+        }
+      }
+    },
+    "/itineraries/{truckType}": {
+      "get": {
+        "tags": [
+          "Itineraries"
+        ],
+        "summary": "Method for get list of itineraries by truck type",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "loaded",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "truckOwner",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "truckType",
+            "in": "path",
+            "description": "Id of the truck type",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/ItineraryFindAllRes"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DriverUpdateReq": {
+      "type": "object",
+      "required": [
+        "birthDate",
+        "destination",
+        "gender",
+        "licenseType",
+        "loaded",
+        "name",
+        "origin",
+        "truckOwner",
+        "truckType"
+      ],
+      "properties": {
+        "loaded": {
+          "type": "boolean"
+        },
+        "licenseType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1,
+          "pattern": "^(.*)$"
+        },
+        "gender": {
+          "type": "string",
+          "pattern": "^(.*)$"
+        },
+        "truckType": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "pattern": "^(.*)$"
+            },
+            "cod": {
+              "type": "string",
+              "pattern": "\\d"
+            }
+          },
+          "required": [
+            "cod",
+            "name"
+          ]
+        },
+        "origin": {
+          "type": "object",
+          "properties": {
+            "lng": {
+              "type": "number"
+            },
+            "lat": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "lat",
+            "lng"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^(.*)$"
+        },
+        "destination": {
+          "type": "object",
+          "properties": {
+            "lng": {
+              "type": "number"
+            },
+            "lat": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "lat",
+            "lng"
+          ]
+        },
+        "birthDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "truckOwner": {
+          "type": "boolean"
+        }
+      },
+      "description": "This is body request for update driver"
+    },
+    "DriverFindAllRes": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "number"
+        },
+        "pages": {
+          "type": "number"
+        },
+        "docs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "limit": {
+          "type": "number"
+        },
+        "page": {
+          "type": "number"
+        }
+      },
+      "description": "This is response for find all drivers"
+    },
+    "ResponseError": {
+      "type": "string",
+      "description": "This is object when any error ocurred"
+    },
+    "ResponseId": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        }
+      },
+      "title": "Response Id",
+      "description": "This is object when response id (updates, deletes of specific object)"
+    },
+    "DriverCreateReq": {
+      "type": "object",
+      "required": [
+        "birthDate",
+        "destination",
+        "gender",
+        "licenseType",
+        "loaded",
+        "name",
+        "origin",
+        "truckOwner",
+        "truckType"
+      ],
+      "properties": {
+        "loaded": {
+          "type": "boolean"
+        },
+        "licenseType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1,
+          "pattern": "^(.*)$"
+        },
+        "gender": {
+          "type": "string",
+          "pattern": "^(.*)$"
+        },
+        "truckType": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "pattern": "^(.*)$"
+            },
+            "cod": {
+              "type": "string",
+              "pattern": "\\d"
+            }
+          },
+          "required": [
+            "cod",
+            "name"
+          ]
+        },
+        "origin": {
+          "type": "object",
+          "properties": {
+            "lng": {
+              "type": "number"
+            },
+            "lat": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "lat",
+            "lng"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^(.*)$"
+        },
+        "destination": {
+          "type": "object",
+          "properties": {
+            "lng": {
+              "type": "number"
+            },
+            "lat": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "lat",
+            "lng"
+          ]
+        },
+        "birthDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "truckOwner": {
+          "type": "boolean"
+        }
+      },
+      "description": "This is body request for create driver"
+    },
+    "ItineraryFindAllRes": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "number"
+        },
+        "pages": {
+          "type": "number"
+        },
+        "docs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "origin": {
+                "type": "object",
+                "properties": {
+                  "lng": {
+                    "type": "number"
+                  },
+                  "lat": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "lat",
+                  "lng"
+                ]
+              },
+              "destination": {
+                "type": "object",
+                "properties": {
+                  "lng": {
+                    "type": "number"
+                  },
+                  "lat": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "lat",
+                  "lng"
+                ]
+              }
+            }
+          }
+        },
+        "limit": {
+          "type": "number"
+        },
+        "page": {
+          "type": "number"
+        }
+      },
+      "description": "This is response for find all itineraries by truck type"
+    }
+  }
+}

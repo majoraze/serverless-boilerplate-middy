@@ -17,7 +17,7 @@ const [operation] = process.argv.slice(-1);
     const conn = await createConnection(env.MONGO_URI)
 
     if (operation === 'create') {
-      // asyncs
+      // asyncs (all can be in parallel)
       promises.push(truckTypeFixture.create())
       await Promise.all(promises)
 

@@ -1,0 +1,5 @@
+ItineraryFindAllRes:
+  name: "ItineraryFindAllRes"
+  description: "This is response for find all itineraries by truck type"
+  contentType: "application/json"
+  schema: ${file(models/itineraries/responses/find-all-by-truck.json):properties.body}

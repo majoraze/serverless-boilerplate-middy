@@ -1,0 +1,17 @@
+DriverCreateReq:
+  name: "DriverCreateReq"
+  description: "This is body request for create driver"
+  contentType: "application/json"
+  schema: ${file(models/drivers/requests/create.json):properties.body}
+
+DriverUpdateReq:
+  name: "DriverUpdateReq"
+  description: "This is body request for update driver"
+  contentType: "application/json"
+  schema: ${file(models/drivers/requests/update.json):properties.body}
+
+DriverFindAllRes:
+  name: "DriverFindAllRes"
+  description: "This is response for find all drivers"
+  contentType: "application/json"
+  schema: ${file(models/drivers/responses/find-all.json):properties.body}

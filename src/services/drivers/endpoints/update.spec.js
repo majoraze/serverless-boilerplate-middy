@@ -39,7 +39,7 @@ describe('Update Driver:', () => {
 
   it('testing update driver not exists', async (done) => {
     const event = {
-      body: {},
+      body: driverValid,
       pathParameters: { id: _id }
     }
 
@@ -55,7 +55,7 @@ describe('Update Driver:', () => {
 
   it('testing update driver error', async (done) => {
     const event = {
-      body: {},
+      body: driverValid,
       pathParameters: { id: _id }
     }
 
