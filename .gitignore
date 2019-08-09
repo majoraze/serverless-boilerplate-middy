@@ -3,3 +3,7 @@ node_modules/
 coverage/
 .webpack
 .env
+_warmup
+.mocks
+.env
+.nyc_output

@@ -5,7 +5,7 @@ import * as TruckTypeFixture from './truck-type'
 const validDriver = () => {
   return {
     name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-    birthDate: faker.date.between('1980-01-01', '1999-12-31'),
+    birthDate: faker.date.between('1980-01-01', '1999-12-31').toISOString(),
     gender: faker.random.boolean() ? 'Masculino' : 'Feminino',
     truckOwner: faker.random.boolean(),
     licenseType: faker.helpers.shuffle(['A', 'B', 'C'])[0],

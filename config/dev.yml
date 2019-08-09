@@ -9,7 +9,7 @@ tags:
   environment: ${self:custom.stage}
 
 environment:
-  MONGO_URI: ${ssm:MONGO_URI}
+  MONGO_URI: ${ssm:/db/mongo_uri}
   STAGE: ${self:custom.stage}
   # ACCOUNT_ID: '#{AWS::AccountId}'
   SERVERLESS_SERVICE: ${self:service}

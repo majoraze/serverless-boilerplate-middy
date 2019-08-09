@@ -1,4 +1,5 @@
 create:
+  warmup: true
   handler: src/services/drivers/endpoints/create.handler
   events:
     - http:
@@ -27,6 +28,7 @@ create:
                 "text/plain": "ResponseError"
 
 update:
+  warmup: true
   handler: src/services/drivers/endpoints/update.handler
   events:
     - http:
@@ -55,7 +57,48 @@ update:
               responseModels:
                 "application/json": ResponseId
 
+findOne:
+  warmup: true
+  handler: src/services/drivers/endpoints/findOne.handler
+  events:
+    - http:
+        path: drivers/{id}
+        method: get
+        cors: true
+        caching:
+          enabled: true
+          ttlInSeconds: 300
+          perKeyInvalidation:
+            requireAuthorization: false
+          cacheKeyParameters:
+            - name: request.path.id
+        documentation:
+          summary: Method for get one driver
+          requestHeaders:
+          -
+            name: "Authorization"
+            description: "Bearer Token"
+            required: true
+          tags:
+            - "Drivers"
+          pathParams:
+            -
+              name: "id"
+              description: "Id of the driver"
+              required: true
+          methodResponses:
+            -
+              statusCode: '200'
+              responseModels:
+                "application/json": ResponseId
+            -
+              statusCode: '400'
+              description: 'Not Found'
+              responseModels:
+                "text/plain": ResponseError
+
 find:
+  warmup: true
   handler: src/services/drivers/endpoints/find.handler
   events:
     - http:

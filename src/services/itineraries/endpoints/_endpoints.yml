@@ -1,4 +1,5 @@
 getItinerariesByTruckType:
+  warmup: true
   handler: src/services/itineraries/endpoints/find-by-truck-type.handler
   events:
     - http:

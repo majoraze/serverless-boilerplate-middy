@@ -4,6 +4,9 @@ import httpEventNormalizer from '@middy/http-event-normalizer'
 import cors from '@middy/http-cors'
 import httpErrorHandler from '@middy/http-error-handler'
 import httpResponseSerializer from '@sharecover-co/middy-http-response-serializer'
+import warmup from '@middy/warmup'
+import awsXrayTracing from '@sharecover-co/middy-aws-xray-tracing'
+import epsagon from 'epsagon'
 import createError from 'http-errors'
 import Log from '@dazn/lambda-powertools-logger'
 
@@ -55,6 +58,7 @@ const handler = middy(async (event, context) => {
       // Erro não tratado em formato http
       const notTreated = new createError.InternalServerError()
       Log.error(err.message, { date: new Date() }, err)
+      epsagon.setError(err)
       throw notTreated
     }
 
@@ -65,9 +69,11 @@ const handler = middy(async (event, context) => {
 
 handler
   .use(doNotWaitForEmptyEventLoop()) // adiciona o context.doNotWaitForEmptyEventLoop = false
-  .use(httpEventNormalizer()) // normaliza queryStringParameters e pathParameters (Basicamente cria um {} caso não envie parametros)
-  .use(httpErrorHandler()) // valida qualquer erro do formato http-errors
+  .use(warmup({ waitForEmptyEventLoop: false })) // retorna de forma rapida quando é um evento warmup
+  .use(awsXrayTracing())
+  .use(httpErrorHandler({ logger: Log.warn })) // valida qualquer erro do formato http-errors
   .use(cors()) // adiciona os headers do cors (tem que ser antes do response)
   .use(httpResponseSerializer()) // serializa a resposta caso seja sucesso em statusCode 200 e repassa o objeto de retorno
+  .use(httpEventNormalizer()) // normaliza queryStringParameters e pathParameters (Basicamente cria um {} caso não envie parametros)
 
 export { handler }

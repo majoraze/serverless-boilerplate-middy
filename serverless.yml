@@ -8,6 +8,7 @@ provider:
   memorySize: 1024
   timeout: 30
   versionFunctions: false
+  tracing: true # enable tracing x-ray
   stackTags: ${file(config/${self:custom.stage}.yml):tags}
   environment:
     ${file(config/${self:custom.stage}.yml):environment}
@@ -15,17 +16,56 @@ provider:
   deploymentBucket:
     name: mobly.${self:custom.stage}.serverless.${self:provider.region}.deploys
 
+  iamRoleStatements: # essas regras serão aplicadas para todos os lambdas
+    - Effect: "Allow"
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource: "*"
+
 package:
   individually: ${file(config/${self:custom.stage}.yml):config.packageIndividually}
 
 plugins:
+  - serverless-plugin-epsagon
   - serverless-webpack
+  - serverless-pseudo-parameters
   - serverless-offline
   - serverless-add-api-key
   - serverless-aws-documentation
+  - serverless-plugin-warmup
+  - serverless-plugin-tracing
+  - serverless-api-gateway-caching
+  - serverless-plugin-split-stacks
 
 custom:
   stage: ${env:SLS_STAGE, opt:stage, self:provider.stage, 'local'}
+
+  apiKeys:
+    - name: standardApiKey_${self:custom.stage}
+
+  splitStacks:
+    perFunction: true
+
+  apiGatewayCaching:
+    enabled: true
+
+  warmup:
+    folderName: '_warmup'
+    cleanFolder: false
+    name: '${self:service}-${self:custom.stage}-warmup-lambdas'
+    timeout: 5
+    prewarm: true
+
+  epsagon:
+    token: ${ssm:/epsagon/token}
+    appName: ${self:service}
+
+  # customDomain:
+  #   domainName: ${file(../../../config/config.${self:custom.stage}.yml):DOMAIN_NAME}
+  #   basePath: 'price-lists'
+  #   stage: ${self:custom.stage}
+  #   createRoute53Record: true
 
   documentation:
     api:
